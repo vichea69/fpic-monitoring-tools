@@ -17,7 +17,7 @@ val isReleaseSigningConfigured = listOf("keyAlias", "keyPassword", "storePasswor
     .all { !keystoreProperties.getProperty(it).isNullOrBlank() }
 
 android {
-    namespace = "com.example.fpicmonitoringtools"
+    namespace = "org.dpacam.fpicmonitoringtools"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
