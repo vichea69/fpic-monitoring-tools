@@ -3,6 +3,14 @@ import 'auth_service.dart';
 import 'login_screen.dart';
 import 'home_page.dart';
 
+Route<T> noAnimationRoute<T>(Widget page) {
+  return PageRouteBuilder<T>(
+    pageBuilder: (_, __, ___) => page,
+    transitionDuration: Duration.zero,
+    reverseTransitionDuration: Duration.zero,
+  );
+}
+
 /// Minimal, robust AppRouteBar showing Khmer on first line and English below.
 class AppRouteBar extends StatelessWidget {
   final int currentIndex;
@@ -81,17 +89,20 @@ class AppRouteBar extends StatelessWidget {
         child: BottomNavigationBar(
           currentIndex: currentIndex,
           onTap: (idx) {
+            // Ignore taps on the currently selected tab to avoid re-pushing screens.
+            if (idx == currentIndex) return;
+
             // Handle Dashboard centrally so per-page handlers can't bypass auth.
             if (idx == 0) {
               if (AuthService.isLoggedIn) {
                 Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const HomePage()),
-                  (route) => false,
+                  noAnimationRoute(const HomePage()),
+                      (route) => false,
                 );
               } else {
                 Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                  (route) => false,
+                  noAnimationRoute(const LoginScreen()),
+                      (route) => false,
                 );
               }
               return;

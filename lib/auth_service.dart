@@ -58,9 +58,9 @@ class AuthService {
   /// Accepts any non-empty username/password and returns the username.
   /// Replace with real backend call as needed.
   static Future<String> loginWithCredentials(
-    String username,
-    String password,
-  ) async {
+      String username,
+      String password,
+      ) async {
     // Simulate a short network delay for responsiveness during development
     await Future.delayed(const Duration(seconds: 1));
     if (username.isEmpty || password.isEmpty) {

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-// import 'package:test_app/app_route.dart';
-// import 'package:test_app/kobo_form_screen.dart';
 import 'app_route.dart';
 import 'auth_service.dart';
 import 'home_page.dart';
@@ -60,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Navigate to dashboard (HomePage) and remove login from the stack
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const HomePage()),
-        (route) => false,
+            (route) => false,
       );
     } on AuthException catch (e) {
       setState(() {
@@ -176,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     : Icons.visibility,
                               ),
                               onPressed: () => setState(
-                                () => _obscurePassword = !_obscurePassword,
+                                    () => _obscurePassword = !_obscurePassword,
                               ),
                             ),
                           ),
@@ -217,17 +215,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: _loading
                                 ? null
                                 : () {
-                                    _attemptLogin();
-                                  },
+                              _attemptLogin();
+                            },
                             child: _loading
                                 ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
-                                  )
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
                                 : const Text('Sign in'),
                           ),
                         ),
@@ -254,21 +252,21 @@ class _LoginScreenState extends State<LoginScreen> {
                               Icons.phone,
                               '',
                               phoneLink,
-                              (v) {},
+                                  (v) {},
                               const Color(0xFF2E7D32), // green
                             ),
                             _socialIconButton(
                               Icons.language,
                               '',
                               websiteLink,
-                              (v) {},
+                                  (v) {},
                               const Color(0xFF0288D1), // blue
                             ),
                             _socialIconButton(
                               Icons.facebook,
                               '',
                               facebookLink,
-                              (v) {},
+                                  (v) {},
                               const Color(0xFF1877F2), // fb blue
                             ),
                           ],
@@ -290,7 +288,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const HomePage()),
-                (route) => false,
+                    (route) => false,
               );
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -298,10 +296,9 @@ class _LoginScreenState extends State<LoginScreen> {
               );
             }
           } else if (idx == 1) {
-            Navigator.push(
+            Navigator.of(
               context,
-              MaterialPageRoute(builder: (context) => const KoboFormScreen()),
-            );
+            ).push(noAnimationRoute(const KoboFormScreen()));
           } else if (idx == 2) {
             ScaffoldMessenger.of(
               context,
@@ -314,12 +311,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _socialIconButton(
-    IconData icon,
-    String hint,
-    String current,
-    void Function(String) onSave,
-    Color color,
-  ) {
+      IconData icon,
+      String hint,
+      String current,
+      void Function(String) onSave,
+      Color color,
+      ) {
     return Column(
       children: [
         InkResponse(
@@ -329,9 +326,27 @@ class _LoginScreenState extends State<LoginScreen> {
               final v = await _promptForLink(hint, current);
               if (v != null && v.isNotEmpty) onSave(v);
             } else {
-              final uri = Uri.tryParse(current);
-              if (uri != null)
-                launchUrl(uri, mode: LaunchMode.externalApplication);
+              String link = current;
+              // If there is no scheme, determine whether it's a phone number
+              // (e.g. +85523883665) and prepend `tel:`. Otherwise assume web
+              // and prepend https:// if needed.
+              if (!link.contains(':')) {
+                final phoneLike = RegExp(r'^[\d\+\-\s\(\)]+$');
+                if (phoneLike.hasMatch(link)) {
+                  link = 'tel:$link';
+                } else {
+                  link = 'https://$link';
+                }
+              }
+              final uri = Uri.tryParse(link);
+              if (uri != null) {
+                // For tel/mailto use default launch; for http(s) open externally.
+                if (uri.scheme == 'tel' || uri.scheme == 'mailto') {
+                  launchUrl(uri);
+                } else {
+                  launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
+              }
             }
           },
           onLongPress: () async {
