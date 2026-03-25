@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
-import 'login_screen.dart';
-import 'home_page.dart';
 
 Route<T> noAnimationRoute<T>(Widget page) {
   return PageRouteBuilder<T>(
@@ -91,22 +89,6 @@ class AppRouteBar extends StatelessWidget {
           onTap: (idx) {
             // Ignore taps on the currently selected tab to avoid re-pushing screens.
             if (idx == currentIndex) return;
-
-            // Handle Dashboard centrally so per-page handlers can't bypass auth.
-            if (idx == 0) {
-              if (AuthService.isLoggedIn) {
-                Navigator.of(context).pushAndRemoveUntil(
-                  noAnimationRoute(const HomePage()),
-                      (route) => false,
-                );
-              } else {
-                Navigator.of(context).pushAndRemoveUntil(
-                  noAnimationRoute(const LoginScreen()),
-                      (route) => false,
-                );
-              }
-              return;
-            }
             onTap(idx);
           },
           backgroundColor: Colors.transparent,
