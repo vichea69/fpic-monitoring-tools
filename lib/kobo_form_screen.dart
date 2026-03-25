@@ -70,7 +70,7 @@ class _KoboFormScreenState extends State<KoboFormScreen> {
           },
         ),
       )
-    // 3. Load the initial URL
+      // 3. Load the initial URL
       ..loadRequest(Uri.parse(koboToolboxUrl));
   }
 
@@ -102,7 +102,7 @@ class _KoboFormScreenState extends State<KoboFormScreen> {
           padding: EdgeInsets.only(top: 50.0),
           child: Column(
             crossAxisAlignment:
-            CrossAxisAlignment.start, // Aligns text to the left
+                CrossAxisAlignment.start, // Aligns text to the left
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
@@ -210,17 +210,22 @@ class _KoboFormScreenState extends State<KoboFormScreen> {
         currentIndex: 1,
         onTap: (idx) {
           if (idx == 0) {
-            if (AuthService.isLoggedIn) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-                    (route) => false,
-              );
-            } else {
+            if (!AuthService.isLoggedIn) {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const LoginScreen()),
-                    (route) => false,
+                (route) => false,
+              );
+              return;
+            }
+
+            // Return to the existing Dashboard route so the WebView is preserved.
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            } else {
+              Navigator.of(context).pushAndRemoveUntil(
+                noAnimationRoute(const HomePage()),
+                (route) => false,
               );
             }
           } else if (idx == 1) {
