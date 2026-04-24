@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 
 // Looker Studio dashboard URL to display on the Home screen
 const String lookerStudioUrl =
-    'https://lookerstudio.google.com/reporting/da4aeba7-d3c3-46df-9e2e-9afb88277fb1';
+    'https://datastudio.google.com/embed/reporting/da4aeba7-d3c3-46df-9e2e-9afb88277fb1/page/p_z6v99rx61d';
 
 class _HomePageState extends State<HomePage> {
   late final WebViewController controller;
@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.only(top: 50.0),
           child: Column(
             crossAxisAlignment:
-            CrossAxisAlignment.start, // Aligns text to the left
+                CrossAxisAlignment.start, // Aligns text to the left
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                 if (!mounted) return;
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      (route) => false,
+                  (route) => false,
                 );
               }
             },
@@ -153,6 +153,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           // WebView fills the body
           Positioned.fill(
+            top: 55,
             child: Stack(
               children: [
                 Listener(
@@ -185,26 +186,6 @@ class _HomePageState extends State<HomePage> {
                   child: WebViewWidget(controller: controller),
                 ),
                 // Decorative header that overlays the WebView. Use IgnorePointer so touches pass to WebView.
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: IgnorePointer(
-                    ignoring: true,
-                    child: Container(
-                      width: double.infinity,
-                      height: 55,
-                      padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 4, 83, 147),
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
                 if (_isRefreshing)
                   const Positioned(
                     top: 8,
@@ -219,6 +200,26 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
               ],
+            ),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: IgnorePointer(
+              ignoring: true,
+              child: Container(
+                width: double.infinity,
+                height: 55,
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 4, 83, 147),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                ),
+              ),
             ),
           ),
         ],
