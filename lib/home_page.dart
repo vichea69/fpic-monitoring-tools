@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 
 // Looker Studio dashboard URL to display on the Home screen
 const String lookerStudioUrl =
-    'https://datastudio.google.com/embed/reporting/da4aeba7-d3c3-46df-9e2e-9afb88277fb1/page/p_z6v99rx61d';
+    'https://datastudio.google.com/embed/reporting/da4aeba7-d3c3-46df-9e2e-9afb88277fb1/page/p_9kjrk7x61d';
 
 class _HomePageState extends State<HomePage> {
   late final WebViewController controller;
@@ -49,9 +49,13 @@ class _HomePageState extends State<HomePage> {
       ..setBackgroundColor(const Color.fromARGB(0, 255, 255, 255))
       ..setNavigationDelegate(
         NavigationDelegate(
+          onPageFinished: (url) async {
+            await Future.delayed(const Duration(milliseconds: 1));
+            await autoDismiss();
+          },
           onProgress: (int progress) {},
           onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
+          // onPageFinished: (String url) {},
           onWebResourceError: (WebResourceError error) {},
         ),
       )
@@ -263,5 +267,19 @@ class _HomePageState extends State<HomePage> {
         actions: [],
       ),
     );
+  }
+
+  Future<void> autoDismiss() async {
+    await controller.runJavaScript('''
+      setInterval(function() {
+        var buttons = document.querySelectorAll('button, div, span');
+
+        buttons.forEach(function(el) {
+          if (el.innerText && el.innerText.trim() === 'Dismiss') {
+            el.click();
+          }
+        });
+      }, 1000);
+    ''');
   }
 }
